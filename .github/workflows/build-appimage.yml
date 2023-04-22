@@ -5,6 +5,8 @@ on:
 
 env: 
   APPDIR: AdvancedSettings.AppDir
+  LIB1: /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/libqwayland-generic.so
+  LIB2: /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/libqwayland-egl.so
 
 jobs:
   build:
@@ -16,7 +18,7 @@ jobs:
     - name: Build
       run: |
         # Install build tools
-        sudo apt-get -y install build-essential libgl1-mesa-dev qt5-default qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5 qml-module-qtquick-extras qml-module-qtquick-controls2 qml-module-qtquick-dialogs qml-module-qt-websockets qml-module-qtmultimedia qtdeclarative5-dev qtchooser libqt5websockets5-dev
+        sudo apt-get -y install build-essential libgl1-mesa-dev qt5-default qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5 qml-module-qtquick-extras qml-module-qtquick-controls2 qml-module-qtquick-dialogs qml-module-qt-websockets qml-module-qtmultimedia qtdeclarative5-dev qtchooser libqt5websockets5-dev qtwayland5 qtwayland5-dev-tools libwayland-dev libgles2-mesa-dev libxkbcommon-dev libqt5waylandclient5-dev qml-module-qtwayland-compositor
         export QT_SELECT=5
 
         test -d ${APPDIR} && rm -rf ${APPDIR}
@@ -35,7 +37,7 @@ jobs:
         test -f linuxdeploy-x86_64.AppImage || wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
         chmod +x linuxdeploy-x86_64.AppImage
         export VERSION=Wayland
-        ./linuxdeploy-x86_64.AppImage -dAppRun.desktop -iAdvancedSettings.png --appdir=${APPDIR} --output appimage
+        ./linuxdeploy-x86_64.AppImage -dAppRun.desktop -iAdvancedSettings.png -l$LIB1 -l$LIB2 --appdir=${APPDIR} --output appimage
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
       with:
