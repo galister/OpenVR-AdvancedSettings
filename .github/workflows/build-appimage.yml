@@ -42,7 +42,7 @@ jobs:
         test -f linuxdeployqt-continuous-x86_64.AppImage || wget -q "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
         chmod +x linuxdeployqt-continuous-x86_64.AppImage
         export VERSION=Wayland
-        ./linuxdeployqt-continuous-x86_64.AppImage ${APPDIR}/usr/share/applications/AdvancedSettings.desktop -extra-plugins=platforms/libqwayland-egl.so,platforms/libqwayland-generic.so -appimage
+        ./linuxdeployqt-continuous-x86_64.AppImage ${APPDIR}/usr/share/applications/AdvancedSettings.desktop -extra-plugins=platforms/libqwayland-egl.so,platforms/libqwayland-generic.so -no-strip -appimage
         find ${APPDIR}
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
