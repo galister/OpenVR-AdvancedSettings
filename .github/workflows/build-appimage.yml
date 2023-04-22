@@ -1,0 +1,43 @@
+name: Build AppImage
+
+on:
+  - workflow_dispatch
+
+env: 
+  APPDIR: AdvancedSettings.AppDir
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: |
+        # Install build tools
+        sudo apt-get -y install build-essential libgl1-mesa-dev qt5-default qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5 qml-module-qtquick-extras qml-module-qtquick-controls2 qml-module-qtquick-dialogs qml-module-qt-websockets qml-module-qtmultimedia qtdeclarative5-dev qtchooser libqt5websockets5-dev
+        export QT_SELECT=5
+
+        test -d ${APPDIR} && rm -rf ${APPDIR}
+        mkdir -p ${APPDIR}/usr
+
+        # Compile
+        qmake PREFIX=${APPDIR}/usr CONFIG+=noX11 CONFIG+=noDBUS CONFIG+=noPulse
+        make
+        make install
+
+        mv ${APPDIR}/usr/AdvancedSettings ${APPDIR}/usr/bin
+        chmod +x ${APPDIR}/usr/bin/AdvancedSettings
+        find ${APPDIR}
+    - name: Package AppImage
+      run: |
+        test -f linuxdeploy-x86_64.AppImage || wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+        chmod +x linuxdeploy-x86_64.AppImage
+        export VERSION=Wayland
+        ./linuxdeploy-x86_64.AppImage -dAppRun.desktop -iAdvancedSettings.png --appdir=${APPDIR} --output appimage
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./OpenVR_Advanced_Settings-Wayland-x86_64.AppImage
+        name: OpenVR-AdvancedSettings-Wayland-x86_64.AppImage
