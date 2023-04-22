@@ -7,8 +7,6 @@
 #include "../utils/update_rate.h"
 #ifdef _WIN32
 #    include "audiomanager/AudioManagerWindows.h"
-#elif __linux__
-#    include "audiomanager/AudioManagerPulse.h"
 #else
 #    include "audiomanager/AudioManagerDummy.h"
 #endif
@@ -21,8 +19,6 @@ void AudioTabController::initStage1()
     vr::EVRSettingsError vrSettingsError;
 #ifdef _WIN32
     audioManager.reset( new AudioManagerWindows() );
-#elif __linux__
-    audioManager.reset( new AudioManagerPulse() );
 #else
     audioManager.reset( new AudioManagerDummy() );
 #endif
