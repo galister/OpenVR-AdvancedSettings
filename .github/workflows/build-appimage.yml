@@ -5,8 +5,6 @@ on:
 
 env: 
   APPDIR: AdvancedSettings.AppDir
-  LIB1: /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/libqwayland-generic.so
-  LIB2: /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/libqwayland-egl.so
 
 jobs:
   build:
@@ -22,7 +20,7 @@ jobs:
         export QT_SELECT=5
 
         test -d ${APPDIR} && rm -rf ${APPDIR}
-        mkdir -p ${APPDIR}/usr
+        mkdir -p ${APPDIR}/usr/lib
 
         # Compile
         qmake PREFIX=${APPDIR}/usr CONFIG+=noX11 CONFIG+=noDBUS CONFIG+=noPulse
@@ -34,10 +32,18 @@ jobs:
         find ${APPDIR}
     - name: Package AppImage
       run: |
-        test -f linuxdeploy-x86_64.AppImage || wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-        chmod +x linuxdeploy-x86_64.AppImage
+        export QT_SELECT=5
+
+        mkdir -p ${APPDIR}/usr/share/applications/
+        cp AppRun.desktop ${APPDIR}/usr/share/applications/AdvancedSettings.desktop
+        mkdir -p ${APPDIR}/usr/share/icons/hicolor/256x256/
+        cp AdvancedSettings.png ${APPDIR}/usr/share/icons/hicolor/256x256/
+
+        test -f linuxdeployqt-continuous-x86_64.AppImage || wget -q "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+        chmod +x linuxdeployqt-continuous-x86_64.AppImage
         export VERSION=Wayland
-        ./linuxdeploy-x86_64.AppImage -dAppRun.desktop -iAdvancedSettings.png -l$LIB1 -l$LIB2 --appdir=${APPDIR} --output appimage
+        ./linuxdeployqt-continuous-x86_64.AppImage ${APPDIR}/usr/share/applications/AdvancedSettings.desktop -extra-plugins=platforms/libqwayland-egl.so,platforms/libqwayland-generic.so -appimage
+        find ${APPDIR}
     - name: Upload AppImage
       uses: actions/upload-artifact@v3
       with:
