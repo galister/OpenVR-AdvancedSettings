@@ -1,3 +1,9 @@
+# Notice
+
+Due to various issues with this on Linux, I decided to roll some of the features from here into [WlxOverlay](https://github.com/galister/WlxOverlay). If you only need playspace mover and night mode, check out that repo.
+
+# Original Readme.md Follows
+
 ![language](https://img.shields.io/badge/Language-C%2B%2B17%2C%20QML-green.svg) 
 ![dependencies](https://img.shields.io/badge/Dependencies-OpenVR%2C%20Qt5%2C%20Python3-green.svg)
 ![license_gpl3](https://img.shields.io/badge/License-GPL%203.0-green.svg) 
